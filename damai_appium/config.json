@@ -1,12 +1,12 @@
 {
   "server_url": "http://127.0.0.1:4723",
-  "keyword": "郁可唯",
+  "keyword": "陈粒",
   "users": [
-    "姓名1",
-    "姓名2"
+    "王胜",
+    "潘鸿运"
   ],
-  "city": "广州",
-  "date": "11.26",
-  "price": "看台1080元",
+  "city": "深圳",
+  "date": "12.06",
+  "price": "看台799元",
   "if_commit_order": false
 }
