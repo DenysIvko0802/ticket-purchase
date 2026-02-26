@@ -1,77 +1,81 @@
-# 大麦网自动抢票系统 - 完整使用指南
+# Damai Auto Ticket System - Complete Usage Guide (PC)
 
-> **版本**: v1.0
-> **更新日期**: 2026-01-04
-> **项目**: ticket-purchase
-
----
-
-## 📋 目录
-
-- [系统概述](#系统概述)
-- [快速开始](#快速开始)
-- [配置说明](#配置说明)
-- [性能优化](#性能优化)
-- [使用流程](#使用流程)
-- [故障排查](#故障排查)
-- [最佳实践](#最佳实践)
-- [常见问题](#常见问题)
+> **Version**: v1.0  
+> **Updated**: 2026-01-04  
+> **Project**: ticket-purchase
 
 ---
 
-## 系统概述
+## 📋 Table of Contents
 
-### 核心功能
+- [System Overview](#system-overview)
+- [Quick Start](#quick-start)
+- [Configuration](#configuration)
+- [Performance Optimization](#performance-optimization)
+- [Execution Flow](#execution-flow)
+- [Troubleshooting](#troubleshooting)
+- [Best Practices](#best-practices)
+- [FAQ](#faq)
+- [User Element Retry Mechanism](#user-element-retry-mechanism)
+- [Quick Checklist](#quick-checklist)
+- [Appendix](#appendix)
+- [Summary](#summary)
 
-本系统是基于 Python + Selenium 开发的大麦网自动抢票工具，支持：
+---
 
-- ✅ **自动登录** - 支持大麦网账号扫码登录
-- ✅ **智能选座** - 自动选择城市、场次、票价、数量
-- ✅ **模糊匹配** - 支持多种日期和价格格式匹配
-- ✅ **多平台支持** - 兼容 PC 端和移动端页面
-- ✅ **自动提交** - 自动选择观演人并提交订单
-- ✅ **异常处理** - 完善的错误处理和重试机制
-- ✅ **性能优化** - 快速模式，提升 40-75% 速度
+## System Overview
 
-### 自动化流程
+### Core Features
+
+This system is a Damai automatic ticket purchasing tool built with Python + Selenium. It supports:
+
+- ✅ **Automatic login** – QR-code login with your Damai account
+- ✅ **Smart selection** – Automatically selects city, session, price, and quantity
+- ✅ **Fuzzy matching** – Supports multiple formats for dates and prices
+- ✅ **Multi-platform support** – Works with both PC and mobile layouts
+- ✅ **Auto submission** – Automatically selects attendees and submits the order
+- ✅ **Error handling** – Robust exception handling and retry mechanisms
+- ✅ **Performance optimization** – Fast mode, 40–75% speed improvement
+
+### Automation Flow
 
 ```
-启动脚本 → 环境检查 → 打开浏览器 → 扫码登录 → 选择场次 →
-选择票价 → 选择数量 → 点击预订 → 选择观演人 → 提交订单
+Start script → Environment check → Open browser → Scan to log in → Select session →
+Select price → Select quantity → Click “Reserve/Book Now” → Select attendees → Submit order
 ```
 
 ---
 
-## 快速开始
+## Quick Start
 
-### 1. 环境要求
+### 1. Environment Requirements
 
-- **操作系统**: macOS / Linux / Windows
+- **OS**: macOS / Linux / Windows
 - **Python**: 3.7+
-- **浏览器**: Chrome (最新版)
-- **网络**: 稳定的网络连接
+- **Browser**: Latest Chrome
+- **Network**: Stable connection
 
-### 2. 安装依赖
+### 2. Install Dependencies
 
 ```bash
-# 进入项目目录
+# Go to project directory
 cd ticket-purchase
 
-# 安装 Python 依赖
+# Install Python dependencies
 pip install selenium chromedriver-autoinstaller
 ```
 
-### 3. 配置文件
+### 3. Configuration File
 
-在项目根目录创建 `config.json`：
+Create `config.json` in the project root:
 
 ```json
 {
     "index_url": "https://www.damai.cn/",
     "login_url": "https://passport.damai.cn/login",
     "target_url": "https://detail.damai.cn/item.htm?id=123456",
-    "users": ["张三", "李四"],
-    "city": "杭州",
+    "users": ["Zhang San", "Li Si"],
+    "city": "Hangzhou",
     "dates": ["2026-04-11"],
     "prices": ["680"],
     "fast_mode": true,
@@ -82,64 +86,66 @@ pip install selenium chromedriver-autoinstaller
 }
 ```
 
-### 4. 运行脚本
+> **Note**: You can keep the Chinese names if your Damai account uses them; only the explanation text here is translated.
+
+### 4. Run the Script
 
 ```bash
-# 基础运行
+# Basic run
 python damai/damai.py
 
-# 或使用虚拟环境
+# Or with a virtual environment
 .venv1/bin/python damai/damai.py
 ```
 
 ---
 
-## 配置说明
+## Configuration
 
-### 参数说明
+### Parameter Description
 
-| 参数 | 类型 | 必填 | 说明 | 默认值 |
-|------|------|------|------|--------|
-| `index_url` | string | ✅ | 大麦网首页 URL | - |
-| `login_url` | string | ✅ | 大麦网登录页面 URL | - |
-| `target_url` | string | ✅ | 目标演出详情页 URL | - |
-| `users` | array | ✅ | 观演人姓名列表 | - |
-| `city` | string | ❌ | 演出城市 | - |
-| `dates` | array | ❌ | 场次日期列表 | - |
-| `prices` | array | ❌ | 票价列表 | - |
-| `fast_mode` | boolean | ❌ | 快速模式开关 | true |
-| `if_listen` | boolean | ❌ | 是否监听缺货登记 | true |
-| `if_commit_order` | boolean | ❌ | 是否自动提交订单 | true |
-| `max_retries` | number | ❌ | 最大重试次数 | 1000 |
-| `page_load_delay` | number | ❌ | 页面加载等待时间(秒) | 2 |
+| Parameter | Type | Required | Description | Default |
+|----------|------|----------|-------------|---------|
+| `index_url` | string | ✅ | Damai home URL | - |
+| `login_url` | string | ✅ | Damai login URL | - |
+| `target_url` | string | ✅ | Target show detail page URL | - |
+| `users` | array | ✅ | List of attendee names | - |
+| `city` | string | ❌ | City of the show | - |
+| `dates` | array | ❌ | List of session dates | - |
+| `prices` | array | ❌ | List of ticket prices | - |
+| `fast_mode` | boolean | ❌ | Fast mode switch | true |
+| `if_listen` | boolean | ❌ | Listen for “restock / waitlist” | true |
+| `if_commit_order` | boolean | ❌ | Auto submit order | true |
+| `max_retries` | number | ❌ | Max retry count | 1000 |
+| `page_load_delay` | number | ❌ | Page load wait time (seconds) | 2 |
 
-### 配置示例
+### Configuration Examples
 
-#### 基础配置（推荐新手）
+#### Basic config (recommended for beginners)
 
 ```json
 {
     "index_url": "https://www.damai.cn/",
     "login_url": "https://passport.damai.cn/login",
     "target_url": "https://detail.damai.cn/item.htm?id=123456",
-    "users": ["张三"],
+    "users": ["Zhang San"],
     "fast_mode": false,
     "page_load_delay": 3,
     "if_commit_order": false
 }
 ```
 
-#### 完整配置（熟练用户）
+#### Full config (experienced users)
 
 ```json
 {
     "index_url": "https://www.damai.cn/",
     "login_url": "https://passport.damai.cn/login",
     "target_url": "https://detail.damai.cn/item.htm?id=123456",
-    "users": ["张三", "李四"],
-    "city": "杭州",
-    "dates": ["2026-04-11", "4月11日", "2026.04.11"],
-    "prices": ["680", "¥680", "680元"],
+    "users": ["Zhang San", "Li Si"],
+    "city": "Hangzhou",
+    "dates": ["2026-04-11", "April 11", "2026.04.11"],
+    "prices": ["680", "¥680", "680 RMB"],
     "fast_mode": true,
     "if_listen": true,
     "if_commit_order": true,
@@ -150,30 +156,31 @@ python damai/damai.py
 
 ---
 
-## 性能优化
+## Performance Optimization
 
-### 快速模式 (fast_mode)
+### Fast Mode (`fast_mode`)
 
-#### 优化效果对比
+#### Effect Comparison
 
-| 操作 | 正常模式 | 快速模式 | 提升 |
-|------|---------|---------|------|
-| 订单确认页加载 | 2.0 秒 | 0 秒（显式等待） | 100% |
-| 轮询等待间隔 | 1.0 秒 | 0.3 秒 | 70% |
-| 点击后等待 | 0.5 秒 | 0.2 秒 | 60% |
-| 详情页选择 | 4-7 秒 | 1.1-1.8 秒 | 70-75% |
-| **总体节省** | - | **约 5-8 秒** | **50-70%** |
+| Operation | Normal Mode | Fast Mode | Improvement |
+|----------|-------------|-----------|-------------|
+| Order confirmation page load | 2.0 s | 0 s (explicit wait) | 100% |
+| Polling interval | 1.0 s | 0.3 s | 70% |
+| Post-click wait | 0.5 s | 0.2 s | 60% |
+| Detail page selection | 4–7 s | 1.1–1.8 s | 70–75% |
+| **Overall saving** | - | **≈ 5–8 s** | **50–70%** |
 
-#### 快速模式特性
+#### Fast Mode Characteristics
 
-✅ **减少等待时间** - 所有 sleep 时间减少 30-70%
-✅ **减少调试输出** - 跳过页面扫描
-✅ **更快的轮询** - 轮询间隔从 1 秒降至 0.3 秒
-✅ **批量显示** - 一次性显示所有选项
+✅ **Reduced waits** – All sleep times reduced by 30–70%  
+✅ **Less debug output** – Skips heavy page scanning logs  
+✅ **Faster polling** – Polling interval reduced from 1 s to 0.3 s  
+✅ **Batch display** – Shows all options at once
 
-#### 使用建议
+#### Usage Suggestions
 
-**推荐配置（大多数场景）**：
+**Recommended config (most scenarios)**:
+
 ```json
 {
     "fast_mode": true,
@@ -181,11 +188,14 @@ python damai/damai.py
 }
 ```
 
-✅ 抢购热门演出
-✅ 网络条件良好
-✅ 熟悉流程，不需要调试信息
+Suitable when:
 
-**调试配置（首次使用或遇到问题）**：
+- ✅抢购热门演出 / Buying very popular shows  
+- ✅ Network is good  
+- ✅ You are familiar with the flow and don’t need debug logs
+
+**Debug config (first-time or when issues occur)**:
+
 ```json
 {
     "fast_mode": false,
@@ -194,236 +204,250 @@ python damai/damai.py
 }
 ```
 
-🔧 首次使用，需要了解流程
-🔧 遇到问题，需要调试信息
-🔧 测试配置是否正确
+Use this when:
 
-### 详情页选择优化
+- 🔧 First-time use, want to understand the full flow  
+- 🔧 Encountering problems and need detailed logs  
+- 🔧 Testing whether the configuration is correct
 
-#### 优化内容
+### Detail Page Selection Optimization
 
-1. **直接选择，不刷新页面** - target_url 已是详情页，无需刷新
-2. **快速模式减少输出** - 跳过不必要的调试信息
-3. **批量显示，减少循环** - 一次性显示所有选项
-4. **使用短等待时间** - 从 0.5 秒降至 0.1-0.2 秒
+#### What’s Optimized
 
-#### 输出对比
+1. **Direct operations on detail page** – `target_url` is already the detail page, no extra refresh
+2. **Less output in fast mode** – Skips unnecessary debug information
+3. **Batch display of options** – Shows all options at once instead of looping with prints
+4. **Shorter waits** – From 0.5 s down to 0.1–0.2 s
 
-**正常模式**：
-```
-***选择城市***
-  目标城市: 杭州
-  找到 3 个城市选项:
-    [0] 上海站
-    [1] 北京站
-    [2] 杭州站
-  ✓ 匹配成功: 杭州站
-```
+#### Output Comparison
 
-**快速模式**：
-```
-***选择城市***
-  目标城市: 杭州
-  ✓ 匹配成功: 杭州站
-```
-
----
-
-## 使用流程
-
-### 完整执行流程
-
-#### 阶段 1: 环境检查
+**Normal mode**:
 
 ```
-==================================================
-大麦网抢票脚本启动
-==================================================
-
-✓ 配置文件加载成功
-  - 目标URL: https://detail.damai.cn/item.htm?id=123456
-  - 观众人数: 2 人
-  - 最大重试次数: 1000 次
-
-⏳ 正在检查 Chrome 环境...
-  Chrome 版本: 144
-  ✓ ChromeDriver 就绪
+*** Select city ***
+  Target city: Hangzhou
+  Found 3 city options:
+    [0] Shanghai
+    [1] Beijing
+    [2] Hangzhou
+  ✓ Matched: Hangzhou
 ```
 
-#### 阶段 2: 登录
+**Fast mode**:
 
 ```
-⏳ 正在启动浏览器...
-⏳ 正在打开大麦网...
-
-***请扫码登录***
-```
-
-**操作**: 使用大麦网 App 扫描浏览器中的二维码完成登录
-
-#### 阶段 3: 详情页选择
-
-**PC 端输出**：
-```
-检测到PC端页面
-
-***选择城市***
-  目标城市: 杭州
-  ✓ 匹配成功: 杭州站
-
-***选择场次***
-  目标场次: ['2026-04-11']
-  ✓ 匹配成功: 2026-04-11 周六 19:30
-
-***选择票价***
-  目标票价: ['680']
-  ✓ 匹配成功: ¥680
-
-***选择购票数量***
-  目标数量: 2 张
-  ✓ 已选择 2 张票
-```
-
-#### 阶段 4: 轮询检测预订按钮
-
-```
-✓ 检测到按钮: 立即预订
-  等待页面跳转...
-  ✓ 页面已跳转到订单确认页
-```
-
-#### 阶段 5: 选择观演人员
-
-```
-***选择观演人员***
-
-  正在选择: 张三 (1/2)
-  ✓ 已选择: 张三
-
-  正在选择: 李四 (2/2)
-  ✓ 已选择: 李四
-
-***已选择 2/2 个观众***
-```
-
-#### 阶段 6: 提交订单
-
-```
-***准备提交订单***
-  ✓ 找到<span>(精确匹配): 立即提交
-***订单已提交***
+*** Select city ***
+  Target city: Hangzhou
+  ✓ Matched: Hangzhou
 ```
 
 ---
 
-## 故障排查
+## Execution Flow
 
-### 问题 1: 找不到用户元素
+### Full Execution Flow
 
-#### 现象
+#### Phase 1: Environment Check
 
 ```
-⚠ 未找到包含 '张三' 的元素
-⚠ 未找到用户: 张三
+==================================================
+Damai ticket script starting
+==================================================
+
+✓ Config file loaded successfully
+  - Target URL: https://detail.damai.cn/item.htm?id=123456
+  - Audience count: 2
+  - Max retries: 1000
+
+⏳ Checking Chrome environment...
+  Chrome version: 144
+  ✓ ChromeDriver ready
 ```
 
-#### 可能原因
+#### Phase 2: Login
 
-**1. 页面还没完全加载** ⭐ 最常见
+```
+⏳ Starting browser...
+⏳ Opening Damai...
 
-**解决方案**：
+*** Please scan to log in ***
+```
+
+**Action**: Use the Damai mobile app to scan the QR code in the browser to complete login.
+
+#### Phase 3: Detail Page Selection
+
+**PC output example**:
+
+```
+Detected PC page
+
+*** Select city ***
+  Target city: Hangzhou
+  ✓ Matched: Hangzhou
+
+*** Select session ***
+  Target sessions: ['2026-04-11']
+  ✓ Matched: 2026-04-11 Sat 19:30
+
+*** Select price ***
+  Target prices: ['680']
+  ✓ Matched: ¥680
+
+*** Select quantity ***
+  Target quantity: 2 tickets
+  ✓ Selected 2 tickets
+```
+
+#### Phase 4: Poll for “Reserve/Book Now” Button
+
+```
+✓ Detected button: Reserve Now
+  Waiting for page redirect...
+  ✓ Page redirected to order confirmation
+```
+
+#### Phase 5: Select Attendees
+
+```
+*** Select attendees ***
+
+  Selecting: Zhang San (1/2)
+  ✓ Selected: Zhang San
+
+  Selecting: Li Si (2/2)
+  ✓ Selected: Li Si
+
+*** Selected 2/2 attendees ***
+```
+
+#### Phase 6: Submit Order
+
+```
+*** Preparing to submit order ***
+  ✓ Found <span> (exact match): Submit Now
+*** Order submitted ***
+```
+
+---
+
+## Troubleshooting
+
+### Issue 1: Cannot Find User Element
+
+#### Symptom
+
+```
+⚠ Could not find element containing 'Zhang San'
+⚠ Could not find user: Zhang San
+```
+
+#### Possible Causes
+
+**1. Page not fully loaded** ⭐ Most common
+
+**Solution**:
 
 ```json
 {
-    "page_load_delay": 3-5  // 增加等待时间
+    "page_load_delay": 3-5
 }
 ```
 
-**2. 用户名格式不匹配**
+Increase the delay so that the attendee list has enough time to load.
 
-**检查方法**：
-- 关闭 fast_mode，查看扫描输出
-- 按 F12 搜索用户名，确认确切文本
-- 常见不匹配：
-  - 配置: `"张三"` → 页面: `"张三 "`（有空格）
-  - 配置: `"张三"` → 页面: `"张三(VIP)"`（有后缀）
+**2. Username text mismatch**
 
-**解决方案**：
+**How to check**:
+
+- Turn off `fast_mode` and review scanning output
+- Press F12 in the browser, search for the username, and confirm the exact text
+- Common mismatches:
+  - Config: `"Zhang San"` → Page: `"Zhang San "` (trailing space)
+  - Config: `"Zhang San"` → Page: `"Zhang San (VIP)"` (suffix)
+
+**Solution**:
+
 ```json
 {
-    "users": ["张三", "张三 ", "张三(VIP)"]  // 添加可能变体
+    "users": ["Zhang San", "Zhang San ", "Zhang San (VIP)"]
 }
 ```
 
-**3. 页面结构变化**
+Add possible variants to the `users` list.
 
-**解决方案**：
-- 截图用户区域的 HTML 结构
-- 提供完整的调试输出
-- 提交 GitHub Issue
+**3. Page structure changed**
 
-### 问题 2: ChromeDriver 版本不匹配
+**Solution**:
 
-#### 现象
+- Capture a screenshot of the attendee HTML area
+- Provide full debug output
+- Open a GitHub issue with details
 
-```
+### Issue 2: ChromeDriver Version Mismatch
+
+#### Symptom
+
+```text
 SessionNotCreatedException: This version of ChromeDriver only supports Chrome version 145
 Current browser version is 144.0.7559.110
 ```
 
-#### 解决方案
+#### Solutions
 
 ```bash
-# 方案 1: 重新运行脚本（会自动安装正确版本）
+# Option 1: Re-run the script (auto-installs correct driver)
 python damai/damai.py
 
-# 方案 2: 手动检查环境
+# Option 2: Manually check environment
 python damai/check_environment.py
 
-# 方案 3: 重新安装 ChromeDriver
+# Option 3: Reinstall ChromeDriver (macOS example)
 brew reinstall --cask chromedriver
 ```
 
-### 问题 3: 提交订单失败
+On Windows, reinstall ChromeDriver using your usual method or remove the old binary and let `chromedriver-autoinstaller` handle it.
 
-#### 现象
+### Issue 3: Order Submission Fails
 
+#### Symptom
+
+```text
+⚠ Could not find a clear submit button
+⚠ All methods failed, please click the submit button manually
 ```
-⚠ 未找到明显的提交按钮
-⚠ 所有方法都失败，请手动点击提交按钮
-```
 
-#### 排查步骤
+#### Debug Steps
 
-1. **查看扫描输出**，确认按钮文本
-2. **检查按钮是否被遮挡**（弹窗或遮罩层）
-3. **尝试手动点击**确认页面是否正常
+1. **Check scanning output** and confirm the actual button text
+2. **Check if the button is covered** (popup/dialog/overlay)
+3. **Try clicking manually** to confirm that the page itself works
 
 ---
 
-## 最佳实践
+## Best Practices
 
-### 1. 配置建议
+### 1. Configuration Recommendations
 
-#### 保守配置（新手推荐）
+#### Conservative config (recommended for beginners)
 
 ```json
 {
-    "users": ["张三"],
-    "dates": ["2026-04-11", "4月11日"],
+    "users": ["Zhang San"],
+    "dates": ["2026-04-11", "April 11"],
     "prices": ["680", "¥680"],
     "fast_mode": false,
     "if_commit_order": false
 }
 ```
 
-特点：只选择 1 个观众、日期和价格配置多种格式、不自动提交订单
+Characteristics: single attendee, multiple formats for date and price, and **no auto submission** (you confirm manually).
 
-#### 激进配置（熟练用户）
+#### Aggressive config (experienced users)
 
 ```json
 {
-    "users": ["张三", "李四", "王五"],
+    "users": ["Zhang San", "Li Si", "Wang Wu"],
     "dates": ["2026-04-11"],
     "prices": ["680"],
     "fast_mode": true,
@@ -433,163 +457,173 @@ brew reinstall --cask chromedriver
 }
 ```
 
-特点：多个观众、精确配置、自动提交、大量重试
+Characteristics: multiple attendees, precise config, auto submission, and high retry count.
 
-### 2. 时间建议
+### 2. Timing Suggestions
 
-**提前准备**：
-- ⏰ 提前 30 分钟启动脚本
-- ⏰ 提前 10 分钟完成登录
-- ⏰ 提前 5 分钟打开详情页
+**Before sale**:
 
-**抢票时刻**：
-- 🎯 准点抢票：设置 `max_retries: 5000+`
-- 🎯 预售抢票：提前 1-2 分钟开始轮询
-- 🎯 回流票：持续轮询，设置 `if_listen: true`
+- ⏰ Start the script **30 minutes** before the sale
+- ⏰ Complete login **10 minutes** before
+- ⏰ Open detail page **5 minutes** before
 
-### 3. 安全建议
+**During sale**:
 
-**账号安全**：
-- ✅ 使用正式大麦网账号
-- ✅ 确保网络环境安全
-- ❌ 不要分享配置文件（包含个人信息）
-- ❌ 不要在公共场所运行
+- 🎯 For on-time sale: set `max_retries: 5000+`
+- 🎯 For presale: start polling 1–2 minutes early
+- 🎯 For returned tickets: keep polling with `if_listen: true`
 
-**支付安全**：
-- ✅ 首次使用建议 `if_commit_order: false`
-- ✅ 手动确认订单后再自动提交
-- ✅ 检查订单金额和票务信息
+### 3. Security Recommendations
 
----
+**Account security**:
 
-## 常见问题
+- ✅ Use your official Damai account
+- ✅ Ensure your network environment is safe
+- ❌ Do not share your `config.json` (contains personal info)
+- ❌ Avoid running on public/shared machines
 
-### Q1: 脚本会自动抢票吗？
+**Payment security**:
 
-**A**: 会的。整个流程完全自动化，包括登录、选择、提交。
-
-但建议首次使用时设置 `if_commit_order: false`，手动确认订单。
-
-### Q2: 支持哪些演出类型？
-
-**A**: 理论上支持大麦网所有演出类型：
-- 🎵 演唱会
-- 🎭 话剧/歌剧
-- 🏀 体育赛事
-- 🎪 展览/活动
-
-### Q3: 可以抢多张票吗？
-
-**A**: 可以。在 `users` 数组中添加多个观演人，系统会自动选择对应数量的票。
-
-### Q4: 抢票成功率有多高？
-
-**A**: 成功率取决于多个因素：
-- ✅ 网络速度：越快越好
-- ✅ 配置准确性：场次、价格配置越准确越快
-- ✅ 电脑性能：影响浏览器响应速度
-
-**建议**：
-- 使用有线网络
-- 关闭其他占用带宽的程序
-- 提前做好准备
-
-### Q5: 快速模式会降低成功率吗？
-
-**A**: 不会。快速模式只是减少了不必要的等待时间，核心逻辑完全相同。事实上，更快的响应速度反而能提高成功率约 5-10%。
-
-### Q6: 会被大麦网封号吗？
-
-**A**: 使用 Selenium 自动化本身不违反大麦网规定，但：
-- ⚠️ 不要频繁刷新（设置合理的 `max_retries`）
-- ⚠️ 不要同时运行多个脚本
-- ⚠️ 不要用于倒卖门票
+- ✅ For first-time use, set `if_commit_order: false`
+- ✅ Manually verify order details before enabling auto submit
+- ✅ Double-check ticket info and total amount
 
 ---
 
-## 用户元素扫描重试机制
+## FAQ
 
-### 功能说明
+### Q1: Will the script automatically grab tickets?
 
-当找不到用户元素时，系统会**自动重试 5 次，每次间隔 0.5 秒**，最大等待时间 **2.5 秒**。
+**A**: Yes. The entire process is automated, including login, selection, and submission.
 
-### 工作流程
+However, for first-time use you should set `if_commit_order: false` and confirm the order manually.
+
+### Q2: What types of events are supported?
+
+**A**: In theory, all Damai events are supported, including:
+
+- 🎵 Concerts
+- 🎭 Drama / Opera
+- 🏀 Sports events
+- 🎪 Exhibitions / Activities
+
+### Q3: Can I buy multiple tickets?
+
+**A**: Yes. Add multiple attendees to the `users` array; the system will select the corresponding number of tickets.
+
+### Q4: How high is the success rate?
+
+**A**: It depends on several factors:
+
+- ✅ Network speed: faster is better
+- ✅ Config accuracy: session/price configuration accuracy
+- ✅ Machine performance: affects browser responsiveness
+
+**Suggestions**:
+
+- Use wired network if possible
+- Close other bandwidth-heavy apps
+- Prepare everything in advance
+
+### Q5: Does fast mode reduce success rate?
+
+**A**: No. Fast mode only reduces unnecessary waits; the core logic is exactly the same. In practice, the faster response can **increase** success rate by around 5–10%.
+
+### Q6: Will my Damai account get banned?
+
+**A**: Using Selenium automation itself is not explicitly forbidden, but:
+
+- ⚠️ Do **not** refresh too frequently (set a reasonable `max_retries`)
+- ⚠️ Do **not** run many scripts in parallel
+- ⚠️ Do **not** use this for ticket scalping
+
+---
+
+## User Element Retry Mechanism
+
+### Description
+
+When the script cannot find the attendee element, it will **automatically retry up to 5 times**, with **0.5 seconds between retries**, for a maximum wait of **2.5 seconds**.
+
+### Workflow
 
 ```
-第 1 次扫描（立即）
-  ↓ 未找到
-等待 0.5 秒
+1st scan (immediately)
+  ↓ Not found
+Wait 0.5 s
   ↓
-第 2 次扫描
-  ↓ 未找到
-等待 0.5 秒
+2nd scan
+  ↓ Not found
+Wait 0.5 s
   ↓
-...（重复 5 次）
+... (repeats up to 5 times)
 ```
 
-### 输出示例
+### Output Examples
 
-**第 1 次成功**：
-```
-  🔍 扫描购票人元素...
-  ✓ 已选择: 张三
-```
+**Success on 1st attempt**:
 
-**第 3 次成功**：
 ```
-  🔍 扫描购票人元素...
-  ⚠ 未找到包含 '张三' 的元素
-  第 2 次尝试...
-  ⚠ 未找到包含 '张三' 的元素
-  第 3 次尝试...
-  ✓ 第 3 次尝试成功找到用户元素
-  ✓ 已选择: 张三
+  🔍 Scanning attendee elements...
+  ✓ Selected: Zhang San
 ```
 
-### 性能影响
+**Success on 3rd attempt**:
 
-| 场景 | 额外等待时间 |
-|------|------------|
-| 第 1 次成功 | 0 秒 |
-| 第 2 次成功 | 0.5 秒 |
-| 第 3 次成功 | 1.0 秒 |
-| 第 5 次成功 | 2.0 秒 |
-| 全部失败 | 2.5 秒 |
+```
+  🔍 Scanning attendee elements...
+  ⚠ Could not find element containing 'Zhang San'
+  2nd attempt...
+  ⚠ Could not find element containing 'Zhang San'
+  3rd attempt...
+  ✓ Found user element successfully on 3rd attempt
+  ✓ Selected: Zhang San
+```
+
+### Performance Impact
+
+| Scenario | Extra wait time |
+|---------|-----------------|
+| Success on 1st attempt | 0 s |
+| Success on 2nd attempt | 0.5 s |
+| Success on 3rd attempt | 1.0 s |
+| Success on 5th attempt | 2.0 s |
+| All attempts fail | 2.5 s |
 
 ---
 
-## 快速检查清单
+## Quick Checklist
 
-遇到问题时，按顺序检查：
+When you encounter issues, go through the following:
 
-### 找不到用户问题
+### User Not Found Problems
 
-- [ ] page_load_delay 是否足够大？（建议 3-5 秒）
-- [ ] fast_mode 是否关闭？（调试时建议关闭）
-- [ ] 用户名格式是否与页面一致？（检查空格、后缀）
-- [ ] 是否查看了完整的扫描输出？
-- [ ] 页面是否完全加载？（手动检查）
-- [ ] 网络是否稳定？（刷新测试）
+- [ ] Is `page_load_delay` large enough? (recommended 3–5 seconds)
+- [ ] Is `fast_mode` turned off while debugging?
+- [ ] Does the username text exactly match the page? (check spaces, suffixes)
+- [ ] Have you checked the full scanning output?
+- [ ] Is the page fully loaded? (check manually)
+- [ ] Is your network stable? (try refreshing)
 
-### 配置优化
+### Config Optimization
 
-- [ ] 是否启用了 fast_mode？
-- [ ] dates 和 prices 是否配置了多个格式？
-- [ ] max_retries 是否足够大？
-- [ ] page_load_delay 是否适合当前网络？
+- [ ] Is `fast_mode` enabled when you actually grab tickets?
+- [ ] Do `dates` and `prices` include multiple formats?
+- [ ] Is `max_retries` large enough?
+- [ ] Is `page_load_delay` appropriate for your network?
 
 ---
 
-## 附录
+## Appendix
 
-### A. 完整配置模板
+### A. Full Config Template
 
 ```json
 {
     "index_url": "https://www.damai.cn/",
     "login_url": "https://passport.damai.cn/login",
     "target_url": "https://detail.damai.cn/item.htm?id=XXXXXX",
-    "users": ["观众姓名"],
+    "users": ["Attendee Name"],
     "city": "",
     "dates": [],
     "prices": [],
@@ -601,50 +635,50 @@ brew reinstall --cask chromedriver
 }
 ```
 
-### B. 依赖清单
+### B. Dependency List
 
-```
+```text
 selenium>=4.0.0
 chromedriver-autoinstaller>=0.6.0
 ```
 
-### C. 目录结构
+### C. Directory Structure
 
-```
+```text
 ticket-purchase/
 ├── damai/
 │   ├── __init__.py
-│   ├── damai.py              # 主入口
-│   ├── concert.py            # 核心逻辑
-│   ├── config.py             # 配置类
-│   └── check_environment.py  # 环境检查
-├── config.json               # 配置文件（需自行创建）
-├── requirements.txt          # 依赖清单
-└── README.md                 # 本文档
+│   ├── damai.py              # main entry
+│   ├── concert.py            # core logic
+│   ├── config.py             # config classes
+│   └── check_environment.py  # environment check
+├── config.json               # config file (create yourself)
+├── requirements.txt          # dependencies
+└── README.md                 # documentation
 ```
 
 ---
 
-## 总结
+## Summary
 
-### 关键特性
+### Key Features
 
-✅ **完全自动化** - 从登录到提交订单全程自动
-✅ **性能优化** - 快速模式提升 50-70% 速度
-✅ **智能重试** - 用户扫描自动重试 5 次
-✅ **模糊匹配** - 支持多种日期和价格格式
-✅ **多平台支持** - PC 端和移动端自适应
-✅ **详细日志** - 便于调试和问题排查
+✅ **Fully automated** – from login to final submission  
+✅ **Performance optimized** – fast mode improves speed by 50–70%  
+✅ **Smart retries** – attendee scanning retries up to 5 times  
+✅ **Fuzzy matching** – multiple formats for dates and prices  
+✅ **Multi-platform** – adapts to both PC and mobile pages  
+✅ **Detailed logs** – easy debugging and troubleshooting
 
-### 使用建议
+### Usage Suggestions
 
-1. **首次使用**：关闭 fast_mode，增加 page_load_delay
-2. **网络较慢**：增加 page_load_delay 到 5-10 秒
-3. **调试问题**：关闭 fast_mode，查看详细输出
-4. **正式抢票**：根据测试结果选择合适的配置
+1. For **first-time use**: turn off `fast_mode`, increase `page_load_delay`.  
+2. For **slow networks**: increase `page_load_delay` to 5–10 seconds.  
+3. For **debugging**: turn off `fast_mode` and inspect detailed log output.  
+4. For **real ticket rush**: tune your config based on prior tests.
 
 ---
 
-**祝您抢票成功！** 🎉
+**Wish you successful ticket hunting!** 🎉  
 
-如有问题或建议，欢迎反馈。
+If you have issues or suggestions, feel free to give feedback.
